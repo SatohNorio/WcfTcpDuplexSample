@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
+using System.Diagnostics;
 
 namespace Gsf.Samples.WCF
 {
@@ -9,12 +10,12 @@ namespace Gsf.Samples.WCF
     {
         public void Regist(string name)
         {
-            Console.Write("[CALL] Regist() => ");
+            Trace.Write("[CALL] Regist() => ");
 
             var context  = OperationContext.Current;
             var callback = context.GetCallbackChannel<IMyCallback>();
 
-            Console.WriteLine("[CALLBACK] SendData();");
+            Trace.WriteLine("[CALLBACK] SendData();");
             callback.SendData(string.Format("{0}_Callback", name));
         }
     }
