@@ -11,7 +11,22 @@
     <DockPanel>
         <ComboBox x:Name="comboBox"
                   DockPanel.Dock="Bottom"
-                  IsEditable="True" />
-        <ListBox x:Name="listBox" DockPanel.Dock="Bottom" />
+                  IsEditable="True"
+                  KeyUp="comboBoxKeyUp" />
+        <Border BorderBrush="Black"
+                BorderThickness="0"
+                DockPanel.Dock="Top">
+            <ScrollViewer x:Name="scrollViewer">
+                <ListBox x:Name="listBox" ItemsSource="{Binding}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock FontFamily="Meiryo UI"
+                                       FontSize="12"
+                                       Text="{Binding}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </ScrollViewer>
+        </Border>
     </DockPanel>
 </Window>

@@ -14,14 +14,15 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ServiceModel;
 
-using Gsf.Samples.WCF;
+using WcfTcpClient.WCFSampleService;
 
 namespace WcfTcpClient
 {
 	/// <summary>
 	/// ClientWindow.xaml の相互作用ロジック
 	/// </summary>
-	public partial class ClientWindow : Window, IMyCallback
+	[CallbackBehaviorAttribute(UseSynchronizationContext = false, ConcurrencyMode = ConcurrencyMode.Reentrant)]
+	public partial class ClientWindow : Window, IMyServiceCallback
 	{
 		// ------------------------------------------------------------------------------------------------------------
 		#region コンストラクタ
@@ -35,18 +36,33 @@ namespace WcfTcpClient
 
 			// 双方向通信を行う場合、サービス側にコールバックの実装を教える必要がある。
 			var context = new InstanceContext(this);
-			var ep = new EndpointAddress("net.tcp://192.168.150.1:8000/WCFSampleService/HelloWCF");
-			this.FProxy = DuplexChannelFactory<IMyService>.CreateChannel(context, new NetTcpBinding(), ep);
+			var proxy = new MyServiceClient(context);
 
-			var msg = "Hello!";
-			this.FProxy.Regist(msg);
-			this.listBox.Items.Add(msg);
+			var info = new ClientInfo();
+			info.IpAddress = "192.168.150.1";
+			info.Port = 8000;
+			proxy.Initialize(info);
+
+			this.FProxy = proxy;
+			this.AddLog("Hello");
+			this.Execute("StartCallback");
 		}
 
 		#endregion
 		// ------------------------------------------------------------------------------------------------------------
 		// ------------------------------------------------------------------------------------------------------------
-		#region WindowClosedイベント処理
+		#region 終了処理
+
+		/// <summary>
+		/// プログラム終了時の処理を行います。
+		/// </summary>
+		/// <param name="sender">イベントを送信したオブジェクトを指定します。</param>
+		/// <param name="e">イベント引数を指定します。</param>
+		private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			this.Execute("StopCallback");
+			this.FProxy = null;
+		}
 
 		/// <summary>
 		/// プログラム終了時の処理を行います。
@@ -55,15 +71,14 @@ namespace WcfTcpClient
 		/// <param name="e">イベント引数を指定します。</param>
 		private void WindowClosed(object sender, EventArgs e)
 		{
-			this.FProxy = null;
 		}
 
 		#endregion
 		// ------------------------------------------------------------------------------------------------------------
 
-			/// <summary>
-			/// WCFサービスのプロキシオブジェクトを管理します。
-			/// </summary>
+		/// <summary>
+		/// WCFサービスのプロキシオブジェクトを管理します。
+		/// </summary>
 		private IMyService FProxy;
 
 		/// <summary>
@@ -76,23 +91,75 @@ namespace WcfTcpClient
 			if (e.Key == Key.Enter)
 			{
 				var txt = this.comboBox.Text;
-				this.FProxy.Regist(txt);
+				this.Execute(txt);
+				this.comboBox.Text = "";
+				this.comboBox.Items.Insert(0, txt);
 			}
 		}
 
 		// ------------------------------------------------------------------------------------------------------------
-		#region IMyCallbackインターフェースの実装
+		#region コマンド作成
 
 		/// <summary>
-		/// ホストが送信したデータを受信します。
+		/// WCFコマンドを作成します。
 		/// </summary>
-		/// <param name="name"></param>
-		public void SendData(string name)
+		/// <param name="cmdType">コマンドを種別を表す文字列を指定します。</param>
+		public void Execute(string cmdType)
 		{
-			this.listBox.Items.Add(name);
+			var proxy = this.FProxy;
+			switch (cmdType.ToLower())
+			{
+				case "startcallback":
+					proxy.StartCallback();
+					break;
+				case "stopcallback":
+					proxy.StopCallback();
+					break;
+				case "order":
+					var rec = new OrderRecord();
+					this.AddLog("GetNextOrderId");
+					rec.OrderId = proxy.GetNextOrderId();
+					this.AddLog("AddOrder");
+					proxy.AddOrder(rec);
+					break;
+			}
 		}
 
 		#endregion
 		// ------------------------------------------------------------------------------------------------------------
+		// ------------------------------------------------------------------------------------------------------------
+		#region IMyServiceCallback インターフェースの実装
+
+		/// <summary>
+		/// ホストとの接続を確認します。送信したデータを受信します。
+		/// </summary>
+		public void WatchDog()
+		{
+			this.AddLog("WatchDog");
+		}
+
+		#endregion
+		// ------------------------------------------------------------------------------------------------------------
+
+		/// <summary>
+		/// リストボックスにメッセージを追加します。
+		/// </summary>
+		/// <param name="msg"></param>
+		private void AddLog(string msg)
+		{
+			if (Application.Current != null)
+			{
+				var dispatcher = Application.Current.Dispatcher;
+				if (dispatcher.CheckAccess())
+				{
+					this.listBox.Items.Add(msg);
+					this.scrollViewer.ScrollToBottom();
+				}
+				else
+				{
+					dispatcher.Invoke(() => this.AddLog(msg));
+				}
+			}
+		}
 	}
 }

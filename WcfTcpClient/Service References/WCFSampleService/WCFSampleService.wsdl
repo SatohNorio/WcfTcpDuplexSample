@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://Gsf.Samples.WCF" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://Gsf.Samples.WCF" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://Gsf.Samples.WCF/Imports">
+      <xsd:import schemaLocation="http://192.168.150.131:8733/WCFSampleService?xsd=xsd0" namespace="http://Gsf.Samples.WCF" />
+      <xsd:import schemaLocation="http://192.168.150.131:8733/WCFSampleService?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://192.168.150.131:8733/WCFSampleService?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Gsf.Samples.WCF" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IMyService_Initialize_InputMessage">
+    <wsdl:part name="parameters" element="tns:Initialize" />
+  </wsdl:message>
+  <wsdl:message name="IMyService_StartCallback_InputMessage">
+    <wsdl:part name="parameters" element="tns:StartCallback" />
+  </wsdl:message>
+  <wsdl:message name="IMyService_StopCallback_InputMessage">
+    <wsdl:part name="parameters" element="tns:StopCallback" />
+  </wsdl:message>
+  <wsdl:message name="IMyService_GetNextOrderId_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetNextOrderId" />
+  </wsdl:message>
+  <wsdl:message name="IMyService_GetNextOrderId_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetNextOrderIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMyService_AddOrder_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddOrder" />
+  </wsdl:message>
+  <wsdl:message name="IMyService_WatchDog_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:WatchDog" />
+  </wsdl:message>
+  <wsdl:portType name="IMyService">
+    <wsdl:operation name="Initialize">
+      <wsdl:input wsaw:Action="http://Gsf.Samples.WCF/IMyService/Initialize" message="tns:IMyService_Initialize_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="StartCallback">
+      <wsdl:input wsaw:Action="http://Gsf.Samples.WCF/IMyService/StartCallback" message="tns:IMyService_StartCallback_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="StopCallback">
+      <wsdl:input wsaw:Action="http://Gsf.Samples.WCF/IMyService/StopCallback" message="tns:IMyService_StopCallback_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetNextOrderId">
+      <wsdl:input wsaw:Action="http://Gsf.Samples.WCF/IMyService/GetNextOrderId" message="tns:IMyService_GetNextOrderId_InputMessage" />
+      <wsdl:output wsaw:Action="http://Gsf.Samples.WCF/IMyService/GetNextOrderIdResponse" message="tns:IMyService_GetNextOrderId_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddOrder">
+      <wsdl:input wsaw:Action="http://Gsf.Samples.WCF/IMyService/AddOrder" message="tns:IMyService_AddOrder_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="WatchDog">
+      <wsdl:output wsaw:Action="http://Gsf.Samples.WCF/IMyService/WatchDog" message="tns:IMyService_WatchDog_OutputCallbackMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

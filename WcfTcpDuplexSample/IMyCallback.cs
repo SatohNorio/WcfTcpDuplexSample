@@ -5,9 +5,15 @@ using System.ServiceModel;
 
 namespace Gsf.Samples.WCF
 {
-    public interface IMyCallback
-    {
-        [OperationContract(IsOneWay=true)]
-        void SendData(string name);
-    }
+	/// <summary>
+	/// サーバからコールバックするメソッドの一覧を定義します。
+	/// </summary>
+	public interface IMyCallback
+	{
+		/// <summary>
+		/// クライアントと通信が確立しているか確認します。切断されていたらタイムアウトの例外がスローされます。
+		/// </summary>
+		[OperationContract(IsOneWay = true)]
+		void WatchDog();
+	}
 }

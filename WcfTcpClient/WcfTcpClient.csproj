@@ -57,6 +57,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Service References\WCFSampleService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Page Include="ClientWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -93,15 +98,38 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Service References\WCFSampleService\MyService.wsdl" />
+    <None Include="Service References\WCFSampleService\WCFSampleService.wsdl" />
+    <None Include="Service References\WCFSampleService\WCFSampleService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFSampleService\WCFSampleService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFSampleService\WCFSampleService2.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WcfTcpDuplexSample\WcfTcpDuplexSample.csproj">
-      <Project>{48812c08-44b4-4059-83c4-f8f7ae667ab2}</Project>
-      <Name>WcfTcpDuplexSample</Name>
-    </ProjectReference>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\WCFSampleService\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\WCFSampleService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\WCFSampleService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\WCFSampleService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
